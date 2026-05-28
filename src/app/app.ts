@@ -17,6 +17,10 @@ import { RouterOutlet } from '@angular/router';
 export class App {
 
   http = inject(HttpClient);
+
+  apiUrl = 'http://localhost:8081/api/clientes';
+
+  clientes = signal<any[]>([]);
   
   formulario = new FormGroup({
     nome : new FormControl(''),
@@ -25,23 +29,23 @@ export class App {
     tipo : new FormControl('')
   });
 
+  ngOnInit() {
+    this.http.get(this.apiUrl + '/consultar')
+      .subscribe((response) => {
+        this.clientes.set(response as any[]);
+      });
+  }
+
   cadastrar() {
 
     const form = this.formulario.value;
 
-    const params = new HttpParams()
-      .set('nome', form.nome!)
-      .set('email', form.email!)
-      .set('telefone', form.telefone!)
-      .set('tipo', form.tipo!)
-
-      this.http.post('http://localhost:8080/api/clientes/criar', null, { params: params, responseType: 'text'})
+      this.http.post(this.apiUrl + '/criar', form, {responseType: 'text'})
         .subscribe((response) => {
           alert(response);
           this.formulario.reset();
+          this.ngOnInit();
         });
-
-    console.log(this.formulario.value);
   }
   
 }

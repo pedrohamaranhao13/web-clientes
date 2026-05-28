@@ -1,46 +1,86 @@
 <div class="card card-body p-4 shadow m-5">
-  
+
   <h3 class="text-primary">Sistema de gerenciamento de clientes</h3>
-  <p>Preencha o formulário abaixo para incluir um cliente:</p>
-  <hr/>
 
-  <form [formGroup]="formulario" (ngSubmit)="cadastrar()">
+  <div class="row">
+    <div class="col-md-3">
 
-    <div class="mb-3">
-      <label>Nome do cliente:</label>
-      <input type="text" placeholder="Ex: João da Silva"
-             class="form-control" formControlName="nome">
+      <form [formGroup]="formulario" (ngSubmit)="cadastrar()">
+
+        <p>Preencha o formulário para incluir um cliente:</p>
+
+        <div class="mb-3">
+          <label>Nome do cliente:</label>
+          <input type="text" placeholder="Ex: João da Silva" class="form-control" formControlName="nome" />
+        </div>
+
+        <div class="mb-3">
+          <label>Endereço de email:</label>
+          <input type="email" placeholder="Ex: joaodasilva@email.com" class="form-control" formControlName="email" />
+        </div>
+
+        <div class="mb-3">
+          <label>Telefone:</label>
+          <input type="tel" placeholder="Ex: (21) 99999-0000" class="form-control" formControlName="telefone" />
+        </div>
+
+        <div class="mb-3">
+          <label>Selecione o tipo de cliente:</label>
+          <div>
+            <input type="radio" formControlName="tipo" value="PESSOA_FISICA" /> Pessoa física
+          </div>
+          <div>
+            <input type="radio" formControlName="tipo" value="PESSOA_JURIDICA" /> Pessoa Jurídica
+          </div>
+        </div>
+
+        <div>
+          <input type="submit" value="Realizar cadastro" class="btn btn-success" />
+        </div>
+
+      </form>
+
     </div>
+    <div class="col-md-9">
 
-    <div class="mb-3">
-      <label>Endereço de e-mail:</label>
-      <input type="email" placeholder="Ex: joaodasilva@email.com"
-             class="form-control" formControlName="email">
+      <table class="table table-sm table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Nome do cliente</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(c of clientes(); track c.id) {
+            <tr>
+              <td>{{ c.nome }}</td>
+              <td>{{ c.email }}</td>
+              <td>{{ c.telefone }}</td>
+              <td>{{ c.tipo }}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-1">
+                  Editar
+                </button>
+                <button class="btn btn-sm btn-outline-danger me-1">
+                  Excluir
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5">
+              Quantidade de clientes: {{ clientes().length }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+
     </div>
-
-    <div class="mb-3">
-      <label>Telefone:</label>
-      <input type="tel" placeholder="Ex: (21) 99999-0000"
-             class="form-control" formControlName="telefone">
-    </div>
-
-    <div class="mb-3">
-      <label>Selecione o tipo de cliente:</label>
-      <div>
-        <input type="radio" formControlName="tipo"
-               value="PESSOA_FISICA"/> Pessoa física
-      </div>
-      <div>
-        <input type="radio" formControlName="tipo"
-               value="PESSOA_JURIDICA"/> Pessoa jurídico
-      </div>
-    </div>
-
-    <div>
-      <input type="submit" value="Realizar cadastro" 
-             class="btn btn-success">
-    </div>
-
-  </form>
+  </div>
 
 </div>
