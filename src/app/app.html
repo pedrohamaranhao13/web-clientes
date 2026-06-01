@@ -5,7 +5,7 @@
   <div class="row">
     <div class="col-md-3">
 
-      <form [formGroup]="formulario" (ngSubmit)="cadastrar()">
+      <form [formGroup]="formCadastro" (ngSubmit)="cadastrar()">
 
         <p>Preencha o formulário para incluir um cliente:</p>
 
@@ -43,6 +43,13 @@
     </div>
     <div class="col-md-9">
 
+      @if(mensagem() != '') {
+      <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>{{ mensagem() }}</strong>
+        <button type="button" class="btn-close" (click)="mensagem.set('')" aria-label="Close"></button>
+      </div>
+      }
+
       <table class="table table-sm table-striped table-hover">
         <thead>
           <tr>
@@ -54,21 +61,23 @@
           </tr>
         </thead>
         <tbody>
-          @for(c of clientes(); track c.id) {
-            <tr>
-              <td>{{ c.nome }}</td>
-              <td>{{ c.email }}</td>
-              <td>{{ c.telefone }}</td>
-              <td>{{ c.tipo }}</td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary me-1">
-                  Editar
-                </button>
-                <button class="btn btn-sm btn-outline-danger me-1">
-                  Excluir
-                </button>
-              </td>
-            </tr>
+          @for(c of clientes() | paginate: { itemsPerPage: 10,
+          currentPage: pagina }; track c.id) {
+          <tr>
+            <td>{{ c.nome }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.telefone }}</td>
+            <td>{{ c.tipo }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEdicao"
+                (click)="obterDados(c.id)">
+                Editar
+              </button>
+              <button class="btn btn-sm btn-outline-danger me-1" (click)="excluir(c.id)">
+                Excluir
+              </button>
+            </td>
+          </tr>
           }
         </tbody>
         <tfoot>
@@ -80,7 +89,68 @@
         </tfoot>
       </table>
 
+      <div class="text-center">
+        <pagination-controls previousLabel="Página anterior" nextLabel="Próxima página"
+          (pageChange)="pageChange($event)" />
+
+      </div>
+
     </div>
   </div>
 
+</div>
+
+<!-- Janela modal para edição do cliente -->
+<div class="modal fade" id="modalEdicao" tabindex="-1" aria labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Atualizar cliente</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form [formGroup]="formEdicao" (ngSubmit)="atualizar()">
+
+          <p>Preencha o formulário para incluir um cliente: </p>
+
+          <div class="mb-3">
+            <label>Nome do Cliente:</label>
+            <input type="text" placeholder="EX: João da Silva" class="form-control" formControlName="nome" />
+          </div>
+
+          <div class="mb-3">
+            <label>Endereço de e-mail:</label>
+            <input type="text" placeholder="EX: joaodasilva@gmail.com" class="form-control" formControlName="email" />
+          </div>
+
+          <div class="mb-3">
+            <label>Telefone:</label>
+            <input type="tel" placeholder="EX: (21) 99999-0000" class="form-control" formControlName="telefone" />
+          </div>
+
+           <div class="mb-3"> 
+            <label>Selecione o tipo de cliente:</label> 
+            <div> 
+              <input type="radio" formControlName="tipo"  
+                     value="PESSOA_FISICA" /> Pessoa física 
+            </div> 
+             <div> 
+              <input type="radio" formControlName="tipo"  
+                     value="PESSOA_JURIDICA" /> Pessoa Jurídica 
+            </div> 
+          </div>
+
+           <div> 
+            <input type="submit" value="Salvar alterações"  
+                   class="btn btn-success" 
+                   data-bs-dismiss="modal" /> 
+          </div> 
+
+        </form>
+
+      </div>
+    </div>
+  </div>
 </div>
